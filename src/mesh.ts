@@ -231,6 +231,7 @@ export class MeshCoord {
     if (!Number.isSafeInteger(meshUnit)) {
       throw new TypeError("meshUnit");
     }
+
     switch (meshUnit) {
       case 1:
         return true;
@@ -283,20 +284,18 @@ export class MeshCoord {
   static #fromDegree = (degree: number, meshUnit: MeshUnit): MeshCoord => {
     const integer = Math.floor(degree);
 
-    const first = integer % 100;
-    const second = Math.floor(8.0 * degree) - 8 * integer;
-    const third = Math.floor(80.0 * degree) - 80 * integer - 10 * second;
+    const first = (integer % 100) as First;
+    const second = (Math.floor(8.0 * degree) - 8 * integer) as Second;
+    const third = (Math.floor(80.0 * degree) -
+      80 * integer -
+      10 * second) as Third;
 
     // Callee checks unit is not null
     switch (meshUnit) {
       case 1:
-        return new MeshCoord(first as First, second as Second, third as Third);
+        return new MeshCoord(first, second, third);
       case 5:
-        return new MeshCoord(
-          first as First,
-          second as Second,
-          third < 5 ? 0 : 5,
-        );
+        return new MeshCoord(first, second, third < 5 ? 0 : 5);
     }
   };
 
@@ -1094,24 +1093,20 @@ export class MeshCell {
     const nextLatitude = southWest.latitude.nextUp(meshUnit);
     const nextLongitude = southWest.longitude.nextUp(meshUnit);
     if (
-      !northWest.latitude.eq(nextLatitude) ||
-      !northWest.longitude.eq(southWest.longitude)
-    ) {
-      console.log("a:", northWest.toString());
-      console.log("b:", nextLatitude.toString());
-      console.log("c:", southWest.longitude.toString());
-
-      throw new CellError();
-    }
-    if (
-      !southEast.latitude.eq(southWest.latitude) ||
-      !southEast.longitude.eq(nextLongitude)
+      northWest.latitude.ne(nextLatitude) ||
+      northWest.longitude.ne(southWest.longitude)
     ) {
       throw new CellError();
     }
     if (
-      !northEast.latitude.eq(nextLatitude) ||
-      !northEast.longitude.eq(nextLongitude)
+      southEast.latitude.ne(southWest.latitude) ||
+      southEast.longitude.ne(nextLongitude)
+    ) {
+      throw new CellError();
+    }
+    if (
+      northEast.latitude.ne(nextLatitude) ||
+      northEast.longitude.ne(nextLongitude)
     ) {
       throw new CellError();
     }

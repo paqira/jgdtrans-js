@@ -299,12 +299,12 @@ export class Point {
    * @param corr
    * @example
    * ```
-   * const point = new Point(35.0, 145.0, 5.0);
+   * const point = new Point(0.0, 0.0, 0.0);
    *
-   * // Prints Point(36.0, 146.0, 6.0)
+   * // Prints Point(1.0, 1.0, 1.0)
    * console.log(point.add(new Correction(1.0, 1.0, 1.0)).toString());
    * // This is not in-place,
-   * // prints Point(35.0, 145.0, 5.0)
+   * // prints Point(0.0, 0.0, 0.0)
    * console.log(point.toString());
    * ```
    */
