@@ -1,4 +1,4 @@
-# jgdtrans
+# jgdtrans for TypeScript/JavaScript
 
 Unofficial coordinate transformer by _Gridded Correction Parameter_
 which Geospatial Information Authority of Japan (GIAJ, formerly GSIJ) distributing
