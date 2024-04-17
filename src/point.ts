@@ -320,7 +320,6 @@ export class Point {
     );
   };
 
-
   /**
    * Make a {@link Point} by substracting {@link Correction}.
    * @param corr
