@@ -320,6 +320,33 @@ export class Point {
     );
   };
 
+
+  /**
+   * Make a {@link Point} by substracting {@link Correction}.
+   * @param corr
+   * @example
+   * ```
+   * const point = new Point(0.0, 0.0, 0.0);
+   *
+   * // Prints Point(-1.0, -1.0, -1.0)
+   * console.log(point.sub(new Correction(1.0, 1.0, 1.0)).toString());
+   * // This is not in-place,
+   * // prints Point(1.0, 1.0, 1.0)
+   * console.log(point.toString());
+   * ```
+   */
+  sub = (corr: Correction): Point => {
+    if (!isCorrection(corr)) {
+      throw new TypeError("corr");
+    }
+
+    return new Point(
+      this.#latitude - corr.latitude,
+      this.#longitude - corr.longitude,
+      this.#altitude - corr.altitude,
+    );
+  };
+
   /**
    * Returns `true` is `other` is equal to `this`.
    * @param other The other point.
