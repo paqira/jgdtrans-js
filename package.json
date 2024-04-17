@@ -1,0 +1,42 @@
+{
+  "name": "@paqira/jgdtrans",
+  "version": "0.1.0",
+  "description": "Coordinate Transformer by Gridded Correction Parameter (par file)",
+  "author": "paqira <paqira.2019@gmail.com>",
+  "license": "MIT",
+  "main": "dist/jgdtrans.js",
+  "types": "dist/jgdtrans.d.ts",
+  "type": "module",
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "build": "tsc --build && webpack",
+    "clean": "tsc --build --clean",
+    "test": "jest",
+    "fmt": "prettier --write .",
+    "lint": "eslint src",
+    "check": "prettier --check . && eslint src",
+    "doc": "typedoc --readme README.md src/jgdtrans.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paqira/jgdtrans-js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
+    "ts-loader": "^9.5.1",
+    "typedoc": "^0.25.13",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.6.0",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

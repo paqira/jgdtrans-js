@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "NodeNext",
+    "declaration": true,
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "stripInternal": true,
+    "lib": ["ES2015"]
+  },
+  "include": ["src"],
+  "exclude": ["**/*.test.ts"]
+}
