@@ -1,6 +1,6 @@
 import path from "path";
 
-export default {
+const dflt = {
   mode: "production",
   entry: "./dist/jgdtrans.js",
   output: {
@@ -20,4 +20,19 @@ export default {
   resolve: {
     extensions: [".ts", ".js"],
   },
+  optimization: {
+    minimize: false,
+  },
 };
+
+const noMin = {
+  ...dflt,
+  output: {
+    filename: "jgdtrans.nomodule.min.js",
+  },
+  optimization: {
+    minimize: true,
+  },
+};
+
+export default [dflt, noMin];
