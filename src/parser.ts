@@ -1,5 +1,4 @@
 import { ParseParError } from "./error.js";
-import * as _ from "./mesh.js";
 import { Format, Parameter, Transformer } from "./transformer.js";
 import { isNull } from "./internal.js";
 
