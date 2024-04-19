@@ -123,7 +123,7 @@ export type Third = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 /**
  * The mesh unit, or approximate length of cell's edge.
  *
- * `1` for `1` [km] and `5` for `5` [km].
+ * `1` or `5`, `1` for `1` [km] and `5` for `5` [km].
  */
 export type MeshUnit = 1 | 5;
 
@@ -722,6 +722,7 @@ export class MeshNode {
   // consts
   //
   /** Smallest `latitude` value.
+   *
    * Equals to `MeshCoord(0, 0, 0)`.
    */
   static get LATITUDE_MIN(): MeshCoord {
