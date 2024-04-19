@@ -1,6 +1,7 @@
 import {
   CorrectionNotFoundError,
   ParameterNotFoundError,
+  PointError,
   ValueError,
 } from "./error.js";
 import { MeshCell, MeshUnit } from "./mesh.js";
@@ -9,11 +10,13 @@ import { Point } from "./point.js";
 import {
   eqNumber,
   isBoolean,
+  isFormat,
   isMap,
   isNumber,
+  isPoint,
   isString,
   isUndefined,
-} from "./utils.js";
+} from "./internal.js";
 
 /**
  * Format of par file
@@ -51,20 +54,6 @@ export type Format =
   | "ITRF2014";
 
 /** @internal */
-const isFormat = (x: string): x is Format => {
-  return [
-    "TKY2JGD",
-    "PatchJGD",
-    "PatchJGD_H",
-    "HyokoRev",
-    "PatchJGD_HV",
-    "SemiDynaEXE",
-    "geonetF3",
-    "ITRF2014",
-  ].includes(x);
-};
-
-/** @internal */
 const bilinearInterpolation = (
   sw: number,
   se: number,
@@ -79,11 +68,6 @@ const bilinearInterpolation = (
     nw * (1.0 - longitude) * latitude +
     ne * longitude * latitude
   );
-};
-
-/** @internal */
-const isPoint = (x: unknown): x is Point => {
-  return x instanceof Point;
 };
 
 export const meshUnit = (format: Format): MeshUnit => {
@@ -193,11 +177,9 @@ export class Parameter {
   constructor(latitude: number, longitude: number, altitude: number) {
     if (!isNumber(latitude)) {
       throw new TypeError("latitude");
-    }
-    if (!isNumber(longitude)) {
+    } else if (!isNumber(longitude)) {
       throw new TypeError("longitude");
-    }
-    if (!isNumber(altitude)) {
+    } else if (!isNumber(altitude)) {
       throw new TypeError("altitude");
     }
 
@@ -330,11 +312,9 @@ export class Correction {
   constructor(latitude: number, longitude: number, altitude: number) {
     if (!isNumber(latitude)) {
       throw new TypeError("latitude");
-    }
-    if (!isNumber(longitude)) {
+    } else if (!isNumber(longitude)) {
       throw new TypeError("longitude");
-    }
-    if (!isNumber(altitude)) {
+    } else if (!isNumber(altitude)) {
       throw new TypeError("altitude");
     }
 
@@ -392,7 +372,6 @@ export class Correction {
  * so on latitude and longitude.
  *
  * @example
- *
  * ```
  * // Contents of SemiDyna2023.par
  * const contents = "...";
@@ -445,8 +424,7 @@ export class Transformer {
 
   /**
    * Returns the meshUnit of the format.
-   *
-   * @returns The meshUnit of the format
+   * @returns The meshUnit of the format.
    * @example
    * ```
    * // Prints 1
@@ -506,6 +484,9 @@ export class Transformer {
 
   /**
    * Makes a {@link Transformer}.
+   * @param format The format of par file
+   * @param parameter The transformation parameter
+   * @param description The description
    * @example
    * ```
    * const tf = new Transformer(
@@ -525,26 +506,19 @@ export class Transformer {
    * // prints undefined
    * console.log(tf.description);
    * ```
-   *
-   * @param format The format of par file
-   * @param parameter The transformation parameter
-   * @param description The description
    */
   constructor(
     format: Format,
     parameter: Map<number, Parameter>,
-    description: string | undefined = undefined,
+    description?: string,
   ) {
     if (!isString(format)) {
       throw new TypeError("format");
-    }
-    if (!isFormat(format)) {
+    } else if (!isFormat(format)) {
       throw new ValueError("format");
-    }
-    if (!isMap(parameter)) {
+    } else if (!isMap(parameter)) {
       throw new TypeError("parameter");
-    }
-    if (!isString(description) && !isUndefined(description)) {
+    } else if (!isString(description) && !isUndefined(description)) {
       throw new TypeError("description");
     }
 
@@ -562,6 +536,7 @@ export class Transformer {
    *
    * @param text The par formatted text
    * @param format The format of the text
+   * @throws {@link error.ParseParError}
    * @example
    * ```
    * // Contents of SemiDyna2023.par
@@ -582,14 +557,11 @@ export class Transformer {
   static fromString = (text: string, format: Format, description?: string) => {
     if (!isString(text)) {
       throw new TypeError("text");
-    }
-    if (!isString(format)) {
+    } else if (!isString(format)) {
       throw new TypeError("format");
-    }
-    if (!isFormat(format)) {
+    } else if (!isFormat(format)) {
       throw new ValueError("format");
-    }
-    if (!isString(description) && !isUndefined(description)) {
+    } else if (!isString(description) && !isUndefined(description)) {
       throw new TypeError("description");
     }
 
@@ -602,7 +574,8 @@ export class Transformer {
    * @param point The origin.
    * @param backward If `true`, this performs backward transformation
    * @returns The transformed point.
-   *
+   * @throws {@link error.PointError}
+   * @throws {@link error.ParameterNotFoundError}
    * @see {@link Transformer.forward}
    * @see {@link Transformer.backward}
    */
@@ -620,7 +593,8 @@ export class Transformer {
    *
    * @param point The origin
    * @returns The forwardly transformed point
-   *
+   * @throws {@link error.PointError}
+   * @throws {@link error.ParameterNotFoundError}
    * @example
    * ```
    * const tf = new Transformer(
@@ -660,7 +634,8 @@ export class Transformer {
    *
    * @param point The origin
    * @returns The backwardly transformed point
-   *
+   * @throws {@link error.PointError}
+   * @throws {@link error.ParameterNotFoundError}
    * @example
    * ```
    * const tf = new Transformer(
@@ -699,7 +674,9 @@ export class Transformer {
    *
    * @param point The origin
    * @returns The backwardly transformed point
-   *
+   * @throws {@link error.PointError}
+   * @throws {@link error.ParameterNotFoundError}
+   * @throws {@link error.CorrectionNotFoundError}
    * @example
    * ```
    * const tf = new Transformer(
@@ -762,6 +739,8 @@ export class Transformer {
 
   /**
    * Return the correction on forward-transformation.
+   * @throws {@link error.PointError}
+   * @throws {@link error.ParameterNotFoundError}
    * @example
    * ```
    * const tf = new Transformer(
@@ -789,7 +768,17 @@ export class Transformer {
       throw new TypeError("point");
     }
 
-    const cell = MeshCell.fromPoint(point, this.meshUnit());
+    let cell;
+    try {
+      cell = MeshCell.fromPoint(point, this.meshUnit());
+    } catch (e) {
+      if (e instanceof Error) {
+        throw new PointError("point is out-of-bounds", { cause: e });
+      } else {
+        throw e;
+      }
+    }
+
     const [sw, se, nw, ne] = this.parameterQuadruple(cell);
     const [y, x] = cell.position(point);
 
@@ -829,6 +818,8 @@ export class Transformer {
 
   /**
    * Return the correction on backward-transformation.
+   * @throws {@link error.PointError}
+   * @throws {@link error.ParameterNotFoundError}
    * @example
    * ```
    * const tf = new Transformer(
@@ -878,6 +869,9 @@ export class Transformer {
 
   /**
    * Return the verified correction on backward-transformation.
+   * @throws {@link error.PointError}
+   * @throws {@link error.ParameterNotFoundError}
+   * @throws {@link error.CorrectionNotFoundError}
    * @example
    * ```
    * const tf = new Transformer(
@@ -915,7 +909,17 @@ export class Transformer {
     for (let i = 0; i < ITERATION; i++) {
       const current = new Point(yn, xn, 0.0);
 
-      const cell = MeshCell.fromPoint(current, this.meshUnit());
+      let cell;
+      try {
+        cell = MeshCell.fromPoint(point, this.meshUnit());
+      } catch (e) {
+        if (e instanceof Error) {
+          throw new PointError("point is out-of-bounds", { cause: e });
+        } else {
+          throw e;
+        }
+      }
+
       const [sw, se, nw, ne] = this.parameterQuadruple(cell);
       const [y, x] = cell.position(current);
 

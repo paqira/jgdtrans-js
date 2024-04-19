@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { isOddBits, nextUp } from "./utils.js";
+import { eqNumber, isOddBits, nextUp } from "./internal.js";
 
 describe("nextUp", () => {
   test("nextUp", () => {
@@ -32,5 +32,26 @@ describe("isOddBits", () => {
 
     view.setUint8(7, 1);
     expect(isOddBits(view.getFloat64(0, false))).toBe(true);
+  });
+});
+
+describe("eqNumber", () => {
+  test("eqNumber", () => {
+    expect(eqNumber(0, 0)).toBe(true);
+    expect(eqNumber(0, -0)).toBe(true);
+    expect(eqNumber(-0, 0)).toBe(true);
+    expect(eqNumber(1, 1)).toBe(true);
+    expect(eqNumber(Number.NaN, Number.NaN)).toBe(true);
+    expect(eqNumber(Number.NaN, -Number.NaN)).toBe(true);
+    expect(eqNumber(-Number.NaN, Number.NaN)).toBe(true);
+    expect(eqNumber(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY)).toBe(
+      true,
+    );
+    expect(eqNumber(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY)).toBe(
+      true,
+    );
+
+    expect(eqNumber(Number.NaN, 0.0)).toBe(false);
+    expect(eqNumber(0.0, Number.NaN)).toBe(false);
   });
 });

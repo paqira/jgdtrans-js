@@ -1,16 +1,6 @@
 import { MeshCell, MeshNode, MeshUnit } from "./mesh.js";
 import { Correction } from "./transformer.js";
-import { eqNumber, isNumber } from "./utils.js";
-
-/** @internal */
-const isMeshNode = (x: unknown): x is MeshNode => {
-  return x instanceof MeshNode;
-};
-
-/** @internal */
-const isCorrection = (x: unknown): x is Correction => {
-  return x instanceof Correction;
-};
+import { eqNumber, isCorrection, isMeshNode, isNumber } from "./internal.js";
 
 /** @internal */
 const normalizeLatitude = (degree: number): number => {
@@ -126,11 +116,9 @@ export class Point {
   constructor(latitude: number, longitude: number, altitude: number = 0.0) {
     if (!isNumber(latitude)) {
       throw new TypeError("latitude");
-    }
-    if (!isNumber(longitude)) {
+    } else if (!isNumber(longitude)) {
       throw new TypeError("longitude");
-    }
-    if (!isNumber(altitude)) {
+    } else if (!isNumber(altitude)) {
       throw new TypeError("altitude");
     }
 

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
 import { Parameter, Transformer, Correction } from "./transformer.js";
 import { Point } from "./point.js";
+import { ParameterNotFoundError, PointError } from "./error.js";
 
 describe("Parameter", () => {
   test("type check", () => {
@@ -70,6 +71,18 @@ describe("Transformer", () => {
     expect(() => tf.backwardCorrection(null)).toThrow(TypeError);
     // @ts-expect-error type test
     expect(() => tf.backwardSafeCorrection(null)).toThrow(TypeError);
+  });
+
+  test("error", () => {
+    const tf = new Transformer("TKY2JGD", new Map());
+    expect(() => tf.forward(new Point(-1, 0, 0))).toThrow(PointError);
+    expect(() => tf.forward(new Point(0, 100, 0))).toThrow(
+      ParameterNotFoundError,
+    );
+    expect(() => tf.backward(new Point(-1, 0, 0))).toThrow(PointError);
+    expect(() => tf.backward(new Point(2, 100, 0))).toThrow(
+      ParameterNotFoundError,
+    );
   });
 
   test("TKY2JGD web", () => {

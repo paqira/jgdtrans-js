@@ -1,6 +1,17 @@
 import { OverflowError, CellError, UnitError, ValueError } from "./error.js";
 import { Point } from "./point.js";
-import { isNumber, isOddBits, nextUp } from "./utils.js";
+import {
+  isFirst,
+  isMeshCoord,
+  isMeshNode,
+  isMeshUnit,
+  isNumber,
+  isOddBits,
+  isPoint,
+  isSecond,
+  isThird,
+  nextUp,
+} from "./internal.js";
 
 /** The first digits of {@link MeshCoord}, `0` to `99`. */
 export type First =
@@ -109,43 +120,8 @@ export type Second = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 /** The third digit of {@link MeshCoord}, `0` to `9`. */
 export type Third = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
-/** @internal */
-const isFirst = (x: number): x is First => {
-  return 0 <= x && x < 100;
-};
-
-/** @internal */
-const isSecond = (x: number): x is Second => {
-  return 0 <= x && x < 8;
-};
-
-/** @internal */
-const isThird = (x: number): x is Third => {
-  return 0 <= x && x < 10;
-};
-
-/** @internal */
-const isPoint = (x: unknown): x is Point => {
-  return x instanceof Point;
-};
-
-/** @internal */
-export const isMeshUnit = (x: unknown): x is MeshUnit => {
-  return x === 1 || x === 5;
-};
-
-/** @internal */
-const isMeshCoord = (x: unknown): x is MeshCoord => {
-  return x instanceof MeshCoord;
-};
-
-/** @internal */
-const isMeshNode = (x: unknown): x is MeshNode => {
-  return x instanceof MeshNode;
-};
-
 /**
- * The mesh unit (unit shortly), or approximate length of cell's edge.
+ * The mesh unit, or approximate length of cell's edge.
  *
  * `1` for `1` [km] and `5` for `5` [km].
  */
@@ -216,6 +192,69 @@ export class MeshCoord {
     return this.#third;
   }
 
+  /** Smallest `first` value. */
+  static get FIRST_MIN(): 0 {
+    return 0;
+  }
+
+  /** Largest `first` value. */
+  static get FIRST_MAX(): 99 {
+    return 99;
+  }
+
+  /** Smallest `second` value. */
+  static get SECOND_MIN(): 0 {
+    return 0;
+  }
+
+  /** Largest `second` value. */
+  static get SECOND_MAX(): 7 {
+    return 7;
+  }
+  /** Smallest `third` value. */
+  static get THIRD_MIN(): 0 {
+    return 0;
+  }
+
+  /** Largest `third` value. */
+  static get THIRD_MAX(): 9 {
+    return 9;
+  }
+
+  /**
+   * Makes a {@link MeshCoord}.
+   * @example
+   * ```
+   * const coord = new MeshCoord(1, 2, 3);
+   * console.log(coord.first);  // Prints 1
+   * console.log(coord.second);  // Prints 2
+   * console.log(coord.third);  // Prints 3
+   * ```
+   *
+   * @see {@link MeshCoord.first}
+   * @see {@link MeshCoord.second}
+   * @see {@link MeshCoord.third}
+   */
+  constructor(first: First, second: Second, third: Third) {
+    if (!isNumber(first)) {
+      throw new TypeError("first");
+    } else if (!Number.isSafeInteger(first) || !isFirst(first)) {
+      throw new ValueError("first");
+    } else if (!isNumber(second)) {
+      throw new TypeError("second");
+    } else if (!Number.isSafeInteger(second) || !isSecond(second)) {
+      throw new ValueError("second");
+    } else if (!isNumber(third)) {
+      throw new TypeError("third");
+    } else if (!Number.isSafeInteger(third) || !isThird(third)) {
+      throw new ValueError("third");
+    }
+
+    this.#first = first;
+    this.#second = second;
+    this.#third = third;
+  }
+
   /**
    * Returns `true` if `this` is compatible to the `meshUnit`.
    * @param meshUnit the mesh unit, `1` or `5`
@@ -241,45 +280,6 @@ export class MeshCoord {
         throw new ValueError("meshUnit");
     }
   };
-
-  /**
-   * Makes a {@link MeshCoord}.
-   * @example
-   * ```
-   * const coord = new MeshCoord(1, 2, 3);
-   * console.log(coord.first);  // Prints 1
-   * console.log(coord.second);  // Prints 2
-   * console.log(coord.third);  // Prints 3
-   * ```
-   *
-   * @see {@link MeshCoord.first}
-   * @see {@link MeshCoord.second}
-   * @see {@link MeshCoord.third}
-   */
-  constructor(first: First, second: Second, third: Third) {
-    if (!isNumber(first)) {
-      throw new TypeError("first");
-    }
-    if (!Number.isSafeInteger(first) || !isFirst(first)) {
-      throw new ValueError("first");
-    }
-    if (!isNumber(second)) {
-      throw new TypeError("second");
-    }
-    if (!Number.isSafeInteger(second) || !isSecond(second)) {
-      throw new ValueError("second");
-    }
-    if (!isNumber(third)) {
-      throw new TypeError("third");
-    }
-    if (!Number.isSafeInteger(third) || !isThird(third)) {
-      throw new ValueError("third");
-    }
-
-    this.#first = first;
-    this.#second = second;
-    this.#third = third;
-  }
 
   static #fromDegree = (degree: number, meshUnit: MeshUnit): MeshCoord => {
     const integer = Math.floor(degree);
@@ -318,11 +318,9 @@ export class MeshCoord {
   static fromLatitude = (degree: number, meshUnit: MeshUnit): MeshCoord => {
     if (!isNumber(degree)) {
       throw new TypeError("degree");
-    }
-    if (!Number.isSafeInteger(meshUnit)) {
+    } else if (!Number.isSafeInteger(meshUnit)) {
       throw new TypeError("meshUnit");
-    }
-    if (!isMeshUnit(meshUnit)) {
+    } else if (!isMeshUnit(meshUnit)) {
       throw new ValueError("meshUnit");
     }
 
@@ -358,15 +356,11 @@ export class MeshCoord {
   static fromLongitude = (degree: number, meshUnit: MeshUnit): MeshCoord => {
     if (!isNumber(degree)) {
       throw new TypeError("degree");
-    }
-    if (!Number.isSafeInteger(meshUnit)) {
+    } else if (!Number.isSafeInteger(meshUnit)) {
       throw new TypeError("meshUnit");
-    }
-    if (!isMeshUnit(meshUnit)) {
+    } else if (!isMeshUnit(meshUnit)) {
       throw new ValueError("meshUnit");
-    }
-
-    if (degree < 100.0 || 180.0 < degree) {
+    } else if (degree < 100.0 || 180.0 < degree) {
       throw new ValueError("degree (longitude)");
     }
 
@@ -449,13 +443,21 @@ export class MeshCoord {
     const bound = meshUnit === 1 ? 9 : 5;
 
     if (this.#third === bound) {
-      if (this.#second === 7) {
-        if (this.#first === 99) {
+      if (this.#second === MeshCoord.SECOND_MAX) {
+        if (this.#first === MeshCoord.FIRST_MAX) {
           throw new OverflowError("nextUp");
         }
-        return new MeshCoord((this.#first + 1) as First, 0, 0);
+        return new MeshCoord(
+          (this.#first + 1) as First,
+          MeshCoord.SECOND_MIN,
+          MeshCoord.THIRD_MIN,
+        );
       }
-      return new MeshCoord(this.#first, (this.#second + 1) as Second, 0);
+      return new MeshCoord(
+        this.#first,
+        (this.#second + 1) as Second,
+        MeshCoord.THIRD_MIN,
+      );
     }
     return new MeshCoord(
       this.#first,
@@ -493,12 +495,16 @@ export class MeshCoord {
 
     const bound = meshUnit === 1 ? 9 : 5;
 
-    if (this.#third === 0) {
-      if (this.#second === 0) {
-        if (this.#first === 0) {
+    if (this.#third === MeshCoord.THIRD_MIN) {
+      if (this.#second === MeshCoord.SECOND_MIN) {
+        if (this.#first === MeshCoord.FIRST_MIN) {
           throw new OverflowError("nextDown");
         }
-        return new MeshCoord((this.#first - 1) as First, 7, bound);
+        return new MeshCoord(
+          (this.#first - 1) as First,
+          MeshCoord.SECOND_MAX,
+          bound,
+        );
       }
       return new MeshCoord(this.#first, (this.#second - 1) as Second, bound);
     }
@@ -562,12 +568,10 @@ export class MeshCoord {
     if (this.#first === other.first) {
       if (this.#second === other.second) {
         return this.#third < other.third;
-      } else {
-        return this.#second < other.second;
       }
-    } else {
-      return this.first < other.first;
+      return this.#second < other.second;
     }
+    return this.first < other.first;
   };
 
   /**
@@ -590,12 +594,10 @@ export class MeshCoord {
     if (this.#first === other.first) {
       if (this.#second === other.second) {
         return this.#third <= other.third;
-      } else {
-        return this.#second < other.second;
       }
-    } else {
-      return this.#first < other.first;
+      return this.#second < other.second;
     }
+    return this.#first < other.first;
   };
 
   /**
@@ -618,12 +620,10 @@ export class MeshCoord {
     if (this.#first == other.first) {
       if (this.#second == other.second) {
         return this.#third > other.third;
-      } else {
-        return this.#second > other.second;
       }
-    } else {
-      return this.#first > other.first;
+      return this.#second > other.second;
     }
+    return this.#first > other.first;
   };
 
   /**
@@ -646,12 +646,10 @@ export class MeshCoord {
     if (this.#first == other.first) {
       if (this.#second == other.second) {
         return this.#third >= other.third;
-      } else {
-        return this.#second > other.second;
       }
-    } else {
-      return this.#first > other.first;
+      return this.#second > other.second;
     }
+    return this.#first > other.first;
   };
 
   /**
@@ -720,6 +718,40 @@ export class MeshNode {
     return this.#longitude;
   }
 
+  //
+  // consts
+  //
+  /** Smallest `latitude` value.
+   * Equals to `MeshCoord(0, 0, 0)`.
+   */
+  static get LATITUDE_MIN(): MeshCoord {
+    return new MeshCoord(0, 0, 0);
+  }
+
+  /** Largest `latitude` value.
+   *
+   * Equals to `MeshCoord(99, 7, 9)`.
+   */
+  static get LATITUDE_MAX(): MeshCoord {
+    return new MeshCoord(99, 7, 9);
+  }
+
+  /** Smallest `longitude` value.
+   *
+   * Equals to `MeshCoord(0, 0, 0)`.
+   */
+  static get LONGITUDE_MIN(): MeshCoord {
+    return new MeshCoord(0, 0, 0);
+  }
+
+  /** Largest `longitude` value.
+   *
+   * Equals to `MeshCoord(80, 0, 0)`.
+   */
+  static get LONGITUDE_MAX(): MeshCoord {
+    return new MeshCoord(80, 0, 0);
+  }
+
   /**
    * Returns `true` if `this` is compatible to the `meshUnit`.
    * @param meshUnit the mesh unit, `1` or `5`
@@ -759,21 +791,10 @@ export class MeshNode {
   constructor(latitude: MeshCoord, longitude: MeshCoord) {
     if (!isMeshCoord(latitude)) {
       throw new TypeError("latitude");
-    }
-    if (!isMeshCoord(longitude)) {
+    } else if (!isMeshCoord(longitude)) {
       throw new TypeError("longitude");
-    }
-
-    if (longitude.first === 80) {
-      if (longitude.second === 0) {
-        if (0 < longitude.third) {
-          throw new ValueError("third of longitude");
-        }
-      } else if (0 < longitude.second) {
-        throw new ValueError("second of longitude");
-      }
-    } else if (80 < longitude.first) {
-      throw new ValueError("first of longitude");
+    } else if (MeshNode.LONGITUDE_MAX.lt(longitude)) {
+      throw new ValueError("longitude");
     }
 
     this.#latitude = latitude;
@@ -795,8 +816,7 @@ export class MeshNode {
   static fromMeshcode = (meshcode: number): MeshNode => {
     if (!Number.isSafeInteger(meshcode)) {
       throw new TypeError("meshcode");
-    }
-    if (meshcode < 0 || 10000_00_00 <= meshcode) {
+    } else if (meshcode < 0 || 10000_00_00 <= meshcode) {
       throw new ValueError("meshcode");
     }
 
@@ -1066,27 +1086,21 @@ export class MeshCell {
   ) {
     if (!isMeshNode(southWest)) {
       throw new TypeError("southWest");
-    }
-    if (!isMeshNode(southEast)) {
+    } else if (!isMeshNode(southEast)) {
       throw new TypeError("southEast");
-    }
-    if (!isMeshNode(northWest)) {
+    } else if (!isMeshNode(northWest)) {
       throw new TypeError("northWest");
-    }
-    if (!isMeshNode(northEast)) {
+    } else if (!isMeshNode(northEast)) {
       throw new TypeError("northEast");
     }
 
     if (!southWest.isMeshUnit(meshUnit)) {
       throw new UnitError("southWest");
-    }
-    if (!southEast.isMeshUnit(meshUnit)) {
+    } else if (!southEast.isMeshUnit(meshUnit)) {
       throw new UnitError("southEast");
-    }
-    if (!northWest.isMeshUnit(meshUnit)) {
+    } else if (!northWest.isMeshUnit(meshUnit)) {
       throw new UnitError("northWest");
-    }
-    if (!northEast.isMeshUnit(meshUnit)) {
+    } else if (!northEast.isMeshUnit(meshUnit)) {
       throw new UnitError("northEast");
     }
 
@@ -1233,7 +1247,7 @@ export class MeshCell {
   };
 
   /**
-   * Returns `true` is `other` is equal to `this`.
+   * Returns `true` when `other` is equal to `this`.
    * @param other
    * @returns
    * @example

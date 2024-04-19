@@ -1,27 +1,53 @@
-// TODO: need better logic
+import { ParseParError } from "./error.js";
+import * as _ from "./mesh.js";
 import { Format, Parameter, Transformer } from "./transformer.js";
-
-/** @internal */
-const meshcodeRegex = /^\d{8}$/;
-/** @internal */
-const parameterRegex = /^[+-]?\d+\.\d+$/;
+import { isNull } from "./internal.js";
 
 /** @internal */
 const isMeshcodeString = (text: string): boolean => {
-  return meshcodeRegex.test(text);
+  return /^\d{8}$/.test(text);
 };
 
 /** @internal */
 const isParameterString = (
   text: string,
 ): text is `${"" | "-"}${number}.${number}` => {
-  return parameterRegex.test(text);
+  return /^-?\d+\.\d+$/.test(text);
 };
 
 /** @internal */
 type Range = {
   start: number;
   stop: number;
+};
+
+/** @internal */
+const parse_meshcode = (
+  line: string,
+  start: number,
+  stop: number,
+  lineno: number,
+): number => {
+  const substring = line.substring(start, stop).trim();
+  if (isMeshcodeString(substring)) {
+    return Number.parseInt(substring);
+  }
+  throw new ParseParError(`parse error: meshcode l${lineno}:${start}:${stop}`);
+};
+
+/** @internal */
+const parse_parameter = (
+  line: string,
+  start: number,
+  stop: number,
+  name: string,
+  lineno: number,
+): number => {
+  const substring = line.substring(start, stop).trim();
+  if (isParameterString(substring)) {
+    return Number.parseFloat(substring);
+  }
+  throw new ParseParError(`parse error: ${name} l${lineno}:${start}:${stop}`);
 };
 
 /** @internal */
@@ -109,61 +135,62 @@ export class Parser {
 
     const m = new Map<number, Parameter>();
 
-    let substring: string;
     let meshcode: number;
     let latitude: number;
     let longitude: number;
     let altitude: number;
+
+    let lineno = this.#header + 1;
+    const endOfLine = Math.max(
+      this.#meshcode.stop,
+      this.#latitude?.stop ?? Number.MIN_SAFE_INTEGER,
+      this.#longitude?.stop ?? Number.MIN_SAFE_INTEGER,
+      this.#altitude?.stop ?? Number.MIN_SAFE_INTEGER,
+    );
     for (const line of lines.slice(this.#header, lines.length)) {
-      if (10 < line.length) {
-        // throw
+      if (endOfLine < line.length) {
+        throw new ParseParError(`invalid line: l${lineno}`);
       }
 
-      substring = line
-        .substring(this.#meshcode.start, this.#meshcode.stop)
-        .trim();
-      if (!isMeshcodeString(substring)) {
-        // throw
-      }
-      meshcode = Number.parseInt(substring);
+      meshcode = parse_meshcode(
+        line,
+        this.#meshcode.start,
+        this.#meshcode.stop,
+        lineno,
+      );
 
-      if (this.#latitude != null) {
-        substring = line
-          .substring(this.#latitude.start, this.#latitude.stop)
-          .trim();
-        if (!isParameterString(substring)) {
-          // throw
-        }
-        latitude = Number.parseFloat(substring);
-      } else {
-        latitude = 0.0;
-      }
+      latitude = isNull(this.#latitude)
+        ? 0.0
+        : parse_parameter(
+            line,
+            this.#latitude.start,
+            this.#latitude.stop,
+            "latitude",
+            lineno,
+          );
 
-      if (this.#longitude != null) {
-        substring = line
-          .substring(this.#longitude.start, this.#longitude.stop)
-          .trim();
-        if (!isParameterString(substring)) {
-          // throw
-        }
-        longitude = Number.parseFloat(substring);
-      } else {
-        longitude = 0.0;
-      }
+      longitude = isNull(this.#longitude)
+        ? 0.0
+        : parse_parameter(
+            line,
+            this.#longitude.start,
+            this.#longitude.stop,
+            "longitude",
+            lineno,
+          );
 
-      if (this.#altitude != null) {
-        substring = line
-          .substring(this.#altitude.start, this.#altitude.stop)
-          .trim();
-        if (!isParameterString(substring)) {
-          // throw
-        }
-        altitude = Number.parseFloat(substring);
-      } else {
-        altitude = 0.0;
-      }
+      altitude = isNull(this.#altitude)
+        ? 0.0
+        : parse_parameter(
+            line,
+            this.#altitude.start,
+            this.#altitude.stop,
+            "altitude",
+            lineno,
+          );
 
       m.set(meshcode, new Parameter(latitude, longitude, altitude));
+      lineno += 1;
     }
 
     return new Transformer(this.#format, m, description ?? header);

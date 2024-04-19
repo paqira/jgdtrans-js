@@ -1,11 +1,24 @@
-/** @internal */
-export const isBoolean = (x: unknown): x is boolean => {
-  return "boolean" === typeof x;
-};
+import { First, MeshCoord, MeshNode, MeshUnit, Second, Third } from "./mesh.js";
+import { Point } from "./point.js";
+import { Correction, Format } from "./transformer.js";
+
+//
+// primitive
+//
 
 /** @internal */
 export const isUndefined = (x: unknown): x is undefined => {
   return "undefined" === typeof x;
+};
+
+/** @internal */
+export const isNull = (x: unknown): x is null => {
+  return null === x;
+};
+
+/** @internal */
+export const isBoolean = (x: unknown): x is boolean => {
+  return "boolean" === typeof x;
 };
 
 /** @internal */
@@ -18,9 +31,84 @@ export const isString = (x: unknown): x is string => {
   return "string" === typeof x;
 };
 
+//
+// std
+//
+
 /** @internal */
 export const isMap = (x: unknown): x is Map<unknown, unknown> => {
   return x instanceof Map;
+};
+
+//
+// type
+//
+
+/** @internal */
+export const isFirst = (x: number): x is First => {
+  return MeshCoord.FIRST_MIN <= x && x <= MeshCoord.FIRST_MAX;
+};
+
+/** @internal */
+export const isSecond = (x: number): x is Second => {
+  return MeshCoord.SECOND_MIN <= x && x <= MeshCoord.SECOND_MAX;
+};
+
+/** @internal */
+export const isThird = (x: number): x is Third => {
+  return MeshCoord.THIRD_MIN <= x && x <= MeshCoord.THIRD_MAX;
+};
+
+/** @internal */
+export const isFormat = (x: unknown): x is Format => {
+  return (
+    "TKY2JGD" === x ||
+    "PatchJGD" === x ||
+    "PatchJGD_H" === x ||
+    "HyokoRev" === x ||
+    "PatchJGD_HV" === x ||
+    "SemiDynaEXE" === x ||
+    "geonetF3" === x ||
+    "ITRF2014" === x
+  );
+};
+
+//
+// class
+//
+
+/** @internal */
+export const isMeshUnit = (x: unknown): x is MeshUnit => {
+  return x === 1 || x === 5;
+};
+
+/** @internal */
+export const isMeshCoord = (x: unknown): x is MeshCoord => {
+  return x instanceof MeshCoord;
+};
+
+/** @internal */
+export const isMeshNode = (x: unknown): x is MeshNode => {
+  return x instanceof MeshNode;
+};
+
+/** @internal */
+export const isPoint = (x: unknown): x is Point => {
+  return x instanceof Point;
+};
+
+/** @internal */
+export const isCorrection = (x: unknown): x is Correction => {
+  return x instanceof Correction;
+};
+
+//
+// utils
+//
+
+/** @internal */
+export const eqNumber = (x: number, y: number): boolean => {
+  return x === y || (Number.isNaN(x) && Number.isNaN(y));
 };
 
 /** @internal */
@@ -29,11 +117,6 @@ export const isOddBits = (x: number): boolean => {
   const view = new DataView(buffer);
   view.setFloat64(0, x, false);
   return view.getUint8(7) % 2 != 0;
-};
-
-/** @internal */
-export const eqNumber = (x: number, y: number): boolean => {
-  return x === y || (Number.isNaN(x) && Number.isNaN(y));
 };
 
 /**

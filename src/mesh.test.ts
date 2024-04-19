@@ -23,7 +23,7 @@ describe("MeshCoord", () => {
     // methods
     const coord = new MeshCoord(1, 2, 3);
     // @ts-expect-error type test
-    expect(() => coord.isUnit(null)).toThrow(TypeError);
+    expect(() => coord.isMeshUnit(null)).toThrow(TypeError);
     // @ts-expect-error type test
     expect(() => coord.nextUp(null)).toThrow(TypeError);
     // @ts-expect-error type test
@@ -170,7 +170,7 @@ describe("MeshNode", () => {
     // methods
     const node = MeshNode.fromMeshcode(54401027);
     // @ts-expect-error type test
-    expect(() => node.isUnit(null)).toThrow(TypeError);
+    expect(() => node.isMeshUnit(null)).toThrow(TypeError);
   });
 
   test("constructor", () => {
