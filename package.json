@@ -25,7 +25,7 @@
     "url": "https://github.com/paqira/jgdtrans-js"
   },
   "devDependencies": {
-    "@eslint/js": "^9.0.0",
+    "@eslint/js": "^8.57.0",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.12",
     "eslint": "^8.57.0",
@@ -35,7 +35,7 @@
     "ts-loader": "^9.5.1",
     "typedoc": "^0.25.13",
     "typescript": "^5.4.5",
-    "typescript-eslint": "^7.6.0",
+    "typescript-eslint": "^7.7.0",
     "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4"
   }
