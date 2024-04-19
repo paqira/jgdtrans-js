@@ -46,17 +46,17 @@ export const isMap = (x: unknown): x is Map<unknown, unknown> => {
 
 /** @internal */
 export const isFirst = (x: number): x is First => {
-  return MeshCoord.FIRST_MIN <= x && x <= MeshCoord.FIRST_MAX;
+  return 0 <= x && x <= 99;
 };
 
 /** @internal */
 export const isSecond = (x: number): x is Second => {
-  return MeshCoord.SECOND_MIN <= x && x <= MeshCoord.SECOND_MAX;
+  return 0 <= x && x <= 7;
 };
 
 /** @internal */
 export const isThird = (x: number): x is Third => {
-  return MeshCoord.THIRD_MIN <= x && x <= MeshCoord.THIRD_MAX;
+  return 0 <= x && x <= 9;
 };
 
 /** @internal */

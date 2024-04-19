@@ -192,33 +192,24 @@ export class MeshCoord {
     return this.#third;
   }
 
-  /** Smallest `first` value. */
-  static get FIRST_MIN(): 0 {
-    return 0;
+  //
+  // consts
+  //
+
+  /** Smallest {@link MeshCoord} value.
+   *
+   * Equals to `MeshCoord(0, 0, 0)`.
+   */
+  static get MIN(): MeshCoord {
+    return new MeshCoord(0, 0, 0);
   }
 
-  /** Largest `first` value. */
-  static get FIRST_MAX(): 99 {
-    return 99;
-  }
-
-  /** Smallest `second` value. */
-  static get SECOND_MIN(): 0 {
-    return 0;
-  }
-
-  /** Largest `second` value. */
-  static get SECOND_MAX(): 7 {
-    return 7;
-  }
-  /** Smallest `third` value. */
-  static get THIRD_MIN(): 0 {
-    return 0;
-  }
-
-  /** Largest `third` value. */
-  static get THIRD_MAX(): 9 {
-    return 9;
+  /** Largest {@link MeshCoord} value.
+   *
+   * Equals to `MeshCoord(99, 7, 9)`.
+   */
+  static get MAX(): MeshCoord {
+    return new MeshCoord(99, 7, 9);
   }
 
   /**
@@ -443,20 +434,20 @@ export class MeshCoord {
     const bound = meshUnit === 1 ? 9 : 5;
 
     if (this.#third === bound) {
-      if (this.#second === MeshCoord.SECOND_MAX) {
-        if (this.#first === MeshCoord.FIRST_MAX) {
+      if (this.#second === MeshCoord.MAX.#second) {
+        if (this.#first === MeshCoord.MAX.#first) {
           throw new OverflowError("nextUp");
         }
         return new MeshCoord(
           (this.#first + 1) as First,
-          MeshCoord.SECOND_MIN,
-          MeshCoord.THIRD_MIN,
+          MeshCoord.MIN.#second,
+          MeshCoord.MIN.#third,
         );
       }
       return new MeshCoord(
         this.#first,
         (this.#second + 1) as Second,
-        MeshCoord.THIRD_MIN,
+        MeshCoord.MIN.#third,
       );
     }
     return new MeshCoord(
@@ -495,14 +486,14 @@ export class MeshCoord {
 
     const bound = meshUnit === 1 ? 9 : 5;
 
-    if (this.#third === MeshCoord.THIRD_MIN) {
-      if (this.#second === MeshCoord.SECOND_MIN) {
-        if (this.#first === MeshCoord.FIRST_MIN) {
+    if (this.#third === MeshCoord.MIN.#third) {
+      if (this.#second === MeshCoord.MIN.#second) {
+        if (this.#first === MeshCoord.MIN.#first) {
           throw new OverflowError("nextDown");
         }
         return new MeshCoord(
           (this.#first - 1) as First,
-          MeshCoord.SECOND_MAX,
+          MeshCoord.MAX.#second,
           bound,
         );
       }
@@ -721,36 +712,21 @@ export class MeshNode {
   //
   // consts
   //
-  /** Smallest `latitude` value.
+
+  /** Smallest {@link MeshNode} value.
    *
-   * Equals to `MeshCoord(0, 0, 0)`.
+   * Equals to `MeshNode(MeshCoord(0, 0, 0), MeshCoord(0, 0, 0))`.
    */
-  static get LATITUDE_MIN(): MeshCoord {
-    return new MeshCoord(0, 0, 0);
+  static get MIN(): MeshNode {
+    return new MeshNode(new MeshCoord(0, 0, 0), new MeshCoord(0, 0, 0));
   }
 
-  /** Largest `latitude` value.
+  /** Largest {@link MeshNode} value.
    *
-   * Equals to `MeshCoord(99, 7, 9)`.
+   * Equals to `MeshNode(MeshCoord(99, 7, 9), MeshCoord(80, 0, 0))`.
    */
-  static get LATITUDE_MAX(): MeshCoord {
-    return new MeshCoord(99, 7, 9);
-  }
-
-  /** Smallest `longitude` value.
-   *
-   * Equals to `MeshCoord(0, 0, 0)`.
-   */
-  static get LONGITUDE_MIN(): MeshCoord {
-    return new MeshCoord(0, 0, 0);
-  }
-
-  /** Largest `longitude` value.
-   *
-   * Equals to `MeshCoord(80, 0, 0)`.
-   */
-  static get LONGITUDE_MAX(): MeshCoord {
-    return new MeshCoord(80, 0, 0);
+  static get MAX(): MeshNode {
+    return new MeshNode(new MeshCoord(99, 7, 9), new MeshCoord(80, 0, 0));
   }
 
   /**
@@ -794,7 +770,7 @@ export class MeshNode {
       throw new TypeError("latitude");
     } else if (!isMeshCoord(longitude)) {
       throw new TypeError("longitude");
-    } else if (MeshNode.LONGITUDE_MAX.lt(longitude)) {
+    } else if (new MeshCoord(80, 0, 0).lt(longitude)) {
       throw new ValueError("longitude");
     }
 
