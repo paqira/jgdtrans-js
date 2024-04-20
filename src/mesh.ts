@@ -227,17 +227,17 @@ export class MeshCoord {
    * @see {@link MeshCoord.third}
    */
   constructor(first: First, second: Second, third: Third) {
-    if (!isNumber(first)) {
+    if (!Number.isSafeInteger(first)) {
       throw new TypeError("first");
-    } else if (!Number.isSafeInteger(first) || !isFirst(first)) {
+    } else if (!isFirst(first)) {
       throw new ValueError("first");
-    } else if (!isNumber(second)) {
+    } else if (!Number.isSafeInteger(second)) {
       throw new TypeError("second");
-    } else if (!Number.isSafeInteger(second) || !isSecond(second)) {
+    } else if (!isSecond(second)) {
       throw new ValueError("second");
-    } else if (!isNumber(third)) {
+    } else if (!Number.isSafeInteger(third)) {
       throw new TypeError("third");
-    } else if (!Number.isSafeInteger(third) || !isThird(third)) {
+    } else if (!isThird(third)) {
       throw new ValueError("third");
     }
 
@@ -879,7 +879,11 @@ export class MeshNode {
    * ```
    */
   toPoint = (): Point => {
-    return Point.fromMeshNode(this);
+    return new Point(
+      this.#latitude.toLatitude(),
+      this.#longitude.toLongitude(),
+      0.0,
+    );
   };
 
   /**

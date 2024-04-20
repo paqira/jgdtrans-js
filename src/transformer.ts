@@ -768,7 +768,7 @@ export class Transformer {
       throw new TypeError("point");
     }
 
-    let cell;
+    let cell: MeshCell;
     try {
       cell = MeshCell.fromPoint(point, this.meshUnit());
     } catch (e) {
@@ -909,7 +909,7 @@ export class Transformer {
     for (let i = 0; i < ITERATION; i++) {
       const current = new Point(yn, xn, 0.0);
 
-      let cell;
+      let cell: MeshCell;
       try {
         cell = MeshCell.fromPoint(point, this.meshUnit());
       } catch (e) {

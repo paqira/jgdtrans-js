@@ -168,11 +168,7 @@ export class Point {
       throw new TypeError("node");
     }
 
-    return new Point(
-      node.latitude.toLatitude(),
-      node.longitude.toLongitude(),
-      0.0,
-    );
+    return node.toPoint();
   };
 
   /**
