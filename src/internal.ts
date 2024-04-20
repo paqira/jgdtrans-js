@@ -1,6 +1,6 @@
 import { First, MeshCoord, MeshNode, MeshUnit, Second, Third } from "./mesh.js";
 import { Point } from "./point.js";
-import { Correction, Format } from "./transformer.js";
+import { Correction } from "./transformer.js";
 
 //
 // primitive

@@ -5,53 +5,17 @@ import {
   ValueError,
 } from "./error.js";
 import { MeshCell, MeshUnit } from "./mesh.js";
-import { Parser } from "./parser.js";
+import { Format, isFormat, Parser } from "./par.js";
 import { Point } from "./point.js";
 import {
   eqNumber,
   isBoolean,
-  isFormat,
   isMap,
   isNumber,
   isPoint,
   isString,
   isUndefined,
 } from "./internal.js";
-
-/**
- * Format of par file
- *
- * @remark
- *
- * The format `"PatchJGD_HV"` is for the same event, e.g. `touhokutaiheiyouoki2011.par`
- * and `touhokutaiheiyouoki2011_h.par`.
- * We note that transformation works fine with such data,
- * and GIAJ does not distribute such file.
- *
- * It should fill by zero for the parameters of remaining transformation
- * in areas where it supports only part of the transformation as a result of composition
- * in order to support whole area of each parameter,
- * e.g. altitude of Chubu (<span lang="ja">中部地方</span>) on the composition of
- * `touhokutaiheiyouoki2011.par` and `touhokutaiheiyouoki2011_h.par`.
- *
- * The composite data should be in the same format as SemiDynaEXE.
- *
- * @example
- *
- * ```
- * const format: Format = "TKY2JGD";
- * console.log(unit(format))  // Prints 1
- * ```
- */
-export type Format =
-  | "TKY2JGD"
-  | "PatchJGD"
-  | "PatchJGD_H"
-  | "PatchJGD_HV"
-  | "HyokoRev"
-  | "SemiDynaEXE"
-  | "geonetF3"
-  | "ITRF2014";
 
 /** @internal */
 const bilinearInterpolation = (

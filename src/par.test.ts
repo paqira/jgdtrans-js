@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { Parser } from "./parser.js";
+import { Parser } from "./par.js";
 
 describe("Parser", () => {
   test("TKY2JGD", () => {
