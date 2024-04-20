@@ -39,6 +39,8 @@ export type Format =
 
 /**
  * Returns `true` when `format` is valid.
+ * 
+ * This does not check `format` is `string` type.
  * @param x a test value
  * @returns `true` when `format` is valid.
  * @example
@@ -48,7 +50,7 @@ export type Format =
  * console.log(isFormat("Hi!"));  // prints false
  * ```
  */
-export const isFormat = (format: unknown): format is Format => {
+export const isFormat = (format: string): format is Format => {
   return (
     "TKY2JGD" === format ||
     "PatchJGD" === format ||
