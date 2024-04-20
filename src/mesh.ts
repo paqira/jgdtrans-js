@@ -129,8 +129,6 @@ export type MeshUnit = 1 | 5;
 
 /**
  * Returns `true` when `meshcode` is valid.
- *
- * This does not check `meshcode` is `number` type.
  * @param meshcode a test value.
  * @returns `true` when `meshcode` is valid.
  * @example
@@ -140,11 +138,12 @@ export type MeshUnit = 1 | 5;
  * console.log(isMeshcode(100000000));  // prints false
  * ```
  */
-export const isMeshcode = (meshcode: number): boolean => {
+export const isMeshcode = (meshcode: unknown): boolean => {
   try {
+    // @ts-expect-error throws TypeError
     MeshNode.fromMeshcode(meshcode);
   } catch (e) {
-    if (e instanceof ValueError) {
+    if (e instanceof ValueError || e instanceof TypeError) {
       return false;
     }
     throw e;

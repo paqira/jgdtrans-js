@@ -10,8 +10,8 @@ import {
 } from "./mesh.js";
 import { OverflowError, UnitError, ValueError } from "./error.js";
 
-describe("MeshCoord", () => {
-  test("type check", () => {
+describe("isMeshcode", () => {
+  test("isMeshcode", () => {
     expect(isMeshcode(54401027)).toBe(true);
     expect(isMeshcode(800000)).toBe(true);
 
@@ -19,6 +19,8 @@ describe("MeshCoord", () => {
     expect(isMeshcode(100000000)).toBe(false);
     expect(isMeshcode(10810000)).toBe(false);
     expect(isMeshcode(10000800)).toBe(false);
+    expect(isMeshcode(null)).toBe(false);
+    expect(isMeshcode("54401027")).toBe(false);
   });
 });
 

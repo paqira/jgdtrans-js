@@ -1,5 +1,16 @@
 import { describe, expect, test } from "@jest/globals";
-import { Parser } from "./par.js";
+import { Parser, isFormat } from "./par.js";
+
+describe("isFormat", () => {
+  test("isFormat", () => {
+    expect(isFormat("TKY2JGD")).toBe(true);
+    expect(isFormat("SemiDynaEXE")).toBe(true);
+
+    expect(isFormat(-1)).toBe(false);
+    expect(isFormat("Hi!")).toBe(false);
+    expect(isFormat(null)).toBe(false);
+  });
+});
 
 describe("Parser", () => {
   test("TKY2JGD", () => {
