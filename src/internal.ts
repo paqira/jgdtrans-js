@@ -59,20 +59,6 @@ export const isThird = (x: number): x is Third => {
   return 0 <= x && x <= 9;
 };
 
-/** @internal */
-export const isFormat = (x: unknown): x is Format => {
-  return (
-    "TKY2JGD" === x ||
-    "PatchJGD" === x ||
-    "PatchJGD_H" === x ||
-    "HyokoRev" === x ||
-    "PatchJGD_HV" === x ||
-    "SemiDynaEXE" === x ||
-    "geonetF3" === x ||
-    "ITRF2014" === x
-  );
-};
-
 //
 // class
 //

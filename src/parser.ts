@@ -14,6 +14,30 @@ const isParameterString = (
   return /^-?\d+\.\d+$/.test(text);
 };
 
+/**
+ * Returns `true` when `format` is valid.
+ * @param x a test value
+ * @returns `true` when `format` is valid.
+ * @example
+ * ```
+ * console.log(isFormat("TKY2JGD"));  // prints ture
+ * console.log(isFormat("SemiDynaEXE"));  // prints ture
+ * console.log(isFormat("Hi!"));  // prints false
+ * ```
+ */
+export const isFormat = (format: unknown): format is Format => {
+  return (
+    "TKY2JGD" === format ||
+    "PatchJGD" === format ||
+    "PatchJGD_H" === format ||
+    "HyokoRev" === format ||
+    "PatchJGD_HV" === format ||
+    "SemiDynaEXE" === format ||
+    "geonetF3" === format ||
+    "ITRF2014" === format
+  );
+};
+
 /** @internal */
 type Range = {
   start: number;
