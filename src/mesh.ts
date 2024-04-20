@@ -128,6 +128,31 @@ export type Third = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 export type MeshUnit = 1 | 5;
 
 /**
+ * Returns `true` when `meshcode` is valid.
+ *
+ * This does not check `meshcode` is `number` type.
+ * @param meshcode a test value.
+ * @returns `true` when `meshcode` is valid.
+ * @example
+ * ```
+ * console.log(isMeshcode(54401027));  // prints true
+ * console.log(isMeshcode(-1));  // prints false
+ * console.log(isMeshcode(100000000));  // prints false
+ * ```
+ */
+export const isMeshcode = (meshcode: number): boolean => {
+  try {
+    MeshNode.fromMeshcode(meshcode);
+  } catch (e) {
+    if (e instanceof ValueError) {
+      return false;
+    }
+    throw e;
+  }
+  return true;
+};
+
+/**
  * Represents mesh coordinate, namely, discrete latitude and/or longitude.
  *
  * This supports total ordering, and non-negative latitude and/or longitude only.

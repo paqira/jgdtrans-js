@@ -1,6 +1,26 @@
 import { describe, expect, test } from "@jest/globals";
-import { First, MeshCell, MeshCoord, MeshNode, Second, Third } from "./mesh.js";
+import {
+  First,
+  MeshCell,
+  MeshCoord,
+  MeshNode,
+  Second,
+  Third,
+  isMeshcode,
+} from "./mesh.js";
 import { OverflowError, UnitError, ValueError } from "./error.js";
+
+describe("MeshCoord", () => {
+  test("type check", () => {
+    expect(isMeshcode(54401027)).toBe(true);
+    expect(isMeshcode(800000)).toBe(true);
+
+    expect(isMeshcode(-1)).toBe(false);
+    expect(isMeshcode(100000000)).toBe(false);
+    expect(isMeshcode(10810000)).toBe(false);
+    expect(isMeshcode(10000800)).toBe(false);
+  });
+});
 
 describe("MeshCoord", () => {
   test("type check", () => {
