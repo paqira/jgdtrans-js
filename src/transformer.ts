@@ -356,7 +356,7 @@ export class Correction {
  *
  * // verified backward transformation
  * const q = tf.backwardSafe(result);
- * // prints Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970085)
+ * // prints Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
  * console.log(q.toString());
  * ```
  */
@@ -633,7 +633,7 @@ export class Transformer {
    *
    * The result's drafting from the exact solution
    * is less than error of the GIAJ latitude and longitude parameter,
-   * `2.7e-9` \[deg\], for each latitude and longitude.
+   * `1e-9` \[deg\], for each latitude and longitude.
    * The altitude's drafting is less than `1e-5` \[m\] which is error of the GIAJ altitude parameter.
    *
    * @param point The origin
@@ -653,14 +653,14 @@ export class Transformer {
    *    ]),
    * );
    *
-   * // origin is forward trans. from 36.10377479, 140.087855041, 2.34
-   * // In this case, no error remains on latitude and longitude
+   * // The origin is forward trans. from Point(36.10377479, 140.087855041, 2.34),
+   * // In this case, no error remains.
    * const origin = new Point(36.103773017086695, 140.08785924333452, 2.4363138578103);
    * const result = tf.backward(origin);
    *
    * console.log(result.latitude);  // Prints 36.10377479
    * console.log(result.longitude);  // Prints 140.087855041
-   * console.log(result.altitude);  // Prints 2.3399999999970085
+   * console.log(result.altitude);  // Prints 2.34
    * ```
    *
    * @see {@link Transformer.backwardSafeCorrection}
@@ -851,9 +851,9 @@ export class Transformer {
    * const origin = new Point(36.103773017086695, 140.08785924333452, 0.0);
    * const corr = tf.backwardSafeCorrection(origin);
    *
-   * console.log(corr.latitude);  // Prints 1.772913310099049e-6
-   * console.log(corr.longitude);  // Prints -4.202334510033827e-6
-   * console.log(corr.altitude);  // Prints -0.0963138578132916
+   * console.log(corr.latitude);  // Prints 1.7729133100878255e-6
+   * console.log(corr.longitude);  // Prints -4.202334510058886e-6
+   * console.log(corr.altitude);  // Prints -0.09631385781030007
    * ```
    *
    * @see {@link Transformer.backwardSafe}
@@ -864,8 +864,8 @@ export class Transformer {
     }
 
     const SCALE = 3600;
-    const CRITERIA = 2.5e-9;
-    const ITERATION = 3;
+    const CRITERIA = 5e-14;
+    const ITERATION = 4;
 
     let yn = point.latitude;
     let xn = point.longitude;
@@ -927,7 +927,7 @@ export class Transformer {
       a2 = ne.latitude - nw.latitude;
       const fy_x = -(a1 * (1.0 - yn) + a2 * yn) / SCALE;
 
-      a1 = ne.latitude - sw.latitude;
+      a1 = nw.latitude - sw.latitude;
       a2 = ne.latitude - se.latitude;
       const fy_y = -1.0 - (a1 * (1.0 - xn) + a2 * xn) / SCALE;
 
