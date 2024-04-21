@@ -943,7 +943,7 @@ export class Transformer {
       const delta_x = point.longitude - (xn + corr.longitude);
       const delta_y = point.latitude - (yn + corr.latitude);
 
-      if (Math.abs(delta_x) <= CRITERIA && Math.abs(delta_y) <= CRITERIA) {
+      if (Math.abs(delta_x) < CRITERIA && Math.abs(delta_y) < CRITERIA) {
         return new Correction(-corr.latitude, -corr.longitude, -corr.altitude);
       }
     }
