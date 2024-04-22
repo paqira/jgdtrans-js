@@ -366,6 +366,15 @@ export class Transformer {
   #description: string | undefined;
 
   /**
+   * Max error of {@link Transformer.backward} and {@link Transformer.backwardCorrection}.
+   *
+   * Equals to `5e-14`.
+   */
+  static get ERROR_MAX(): number {
+    return 5e-14;
+  }
+
+  /**
    * The format of par file.
    * @example
    * ```
@@ -587,14 +596,10 @@ export class Transformer {
   };
 
   /**
-   * Returns the backward-transformed position from `point`.
+   * Returns the backward-transformed position compatible to GIAJ web app/APIs.
    *
-   * This is *not* exact as the original _TKY2JGD for Windows Ver.1.3.79_
-   * and the web APIs are (as far as we researched).
-   *
-   * There are points where unable to perform backward transformation
-   * even if they are the results of the forward transformation,
-   * because the forward transformation moves them to the area where the parameter does not support.
+   * This is compatible to GIAJ web app/APIs,
+   * and is **not** exact as the original as.
    *
    * @param point The origin
    * @returns The backwardly transformed point
@@ -612,29 +617,32 @@ export class Transformer {
    *    ]),
    * );
    *
-   * // origin is forward trans. from 36.10377479, 140.087855041, 2.34
    * const origin = new Point(36.103773017086695, 140.08785924333452, 2.4363138578103);
    * const result = tf.backward(origin);
    *
-   * console.log(result.latitude);  // Prints 36.10377479000002
-   * console.log(result.longitude);  // Prints 140.087855041
-   * console.log(result.altitude);  // Prints 2.339999999578243
+   * console.log(result.latitude);  // Prints 36.10377479000002, exact: 36.10377479
+   * console.log(result.longitude);  // Prints 140.087855041, exact: 140.087855041
+   * console.log(result.altitude);  // Prints 2.339999999578243, exact: 2.34
    * ```
    *
-   * @see {@link Transformer.backwardCorrection}
+   * @see {@link Transformer.backwardCompatCorrection}
    */
-  backward = (point: Point): Point => {
-    const corr = this.backwardCorrection(point);
+  backwardCompat = (point: Point): Point => {
+    const corr = this.backwardCompatCorrection(point);
     return point.add(corr);
   };
 
   /**
-   * Returns the validated backward-transformed position.
+   * Returns the backward-transformed position.
    *
-   * The result's drafting from the exact solution
-   * is less than error of the GIAJ latitude and longitude parameter,
-   * `1e-9` \[deg\], for each latitude and longitude.
-   * The altitude's drafting is less than `1e-5` \[m\] which is error of the GIAJ altitude parameter.
+   * The result's error is suppressed under {@link Transformer.ERROR_MAX}.
+   *
+   * Notes, the error is less than 1e-9 \[deg\], which is
+   * error of GIAJ latitude and longitude parameter.
+   * This implies that altitude's error is less than 1e-5 \[m\],
+   * which is error of the GIAJ altitude parameter.
+   *
+   * This is not compatible to GIAJ web app/APIs (but more accurate).
    *
    * @param point The origin
    * @returns The backwardly transformed point
@@ -653,20 +661,19 @@ export class Transformer {
    *    ]),
    * );
    *
-   * // The origin is forward trans. from Point(36.10377479, 140.087855041, 2.34),
-   * // In this case, no error remains.
    * const origin = new Point(36.103773017086695, 140.08785924333452, 2.4363138578103);
    * const result = tf.backward(origin);
    *
-   * console.log(result.latitude);  // Prints 36.10377479
-   * console.log(result.longitude);  // Prints 140.087855041
-   * console.log(result.altitude);  // Prints 2.34
+   * // In this case, no error remains.
+   * console.log(result.latitude);  // Prints 36.10377479, exact: 36.10377479
+   * console.log(result.longitude);  // Prints 140.087855041, exact: 140.087855041
+   * console.log(result.altitude);  // Prints 2.34, exact: 2.34
    * ```
    *
-   * @see {@link Transformer.backwardSafeCorrection}
+   * @see {@link Transformer.backwardCorrection}
    */
-  backwardSafe = (point: Point): Point => {
-    const corr = this.backwardSafeCorrection(point);
+  backward = (point: Point): Point => {
+    const corr = this.backwardCorrection(point);
     return point.add(corr);
   };
 
@@ -804,9 +811,9 @@ export class Transformer {
    * console.log(corr.altitude);  // Prints -0.0963138582320569
    * ```
    *
-   * @see {@link Transformer.backward}
+   * @see {@link Transformer.backwardCompat}
    */
-  backwardCorrection = (point: Point): Correction => {
+  backwardCompatCorrection = (point: Point): Correction => {
     if (!isPoint(point)) {
       throw new TypeError("point");
     }
@@ -856,15 +863,14 @@ export class Transformer {
    * console.log(corr.altitude);  // Prints -0.09631385781030007
    * ```
    *
-   * @see {@link Transformer.backwardSafe}
+   * @see {@link Transformer.backward}
    */
-  backwardSafeCorrection = (point: Point): Correction => {
+  backwardCorrection = (point: Point): Correction => {
     if (!isPoint(point)) {
       throw new TypeError("point");
     }
 
     const SCALE = 3600;
-    const CRITERIA = 5e-14;
     const ITERATION = 4;
 
     let yn = point.latitude;
@@ -943,7 +949,10 @@ export class Transformer {
       const delta_x = point.longitude - (xn + corr.longitude);
       const delta_y = point.latitude - (yn + corr.latitude);
 
-      if (Math.abs(delta_x) < CRITERIA && Math.abs(delta_y) < CRITERIA) {
+      if (
+        Math.abs(delta_x) < Transformer.ERROR_MAX &&
+        Math.abs(delta_y) < Transformer.ERROR_MAX
+      ) {
         return new Correction(-corr.latitude, -corr.longitude, -corr.altitude);
       }
     }
