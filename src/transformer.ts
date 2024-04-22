@@ -635,7 +635,7 @@ export class Transformer {
   /**
    * Returns the backward-transformed position.
    *
-   * The result's error is suppressed under {@link Transformer.ERROR_MAX}.
+   * The result's error from an exact solution is suppressed under {@link Transformer.ERROR_MAX}.
    *
    * Notes, the error is less than 1e-9 \[deg\], which is
    * error of GIAJ latitude and longitude parameter.
