@@ -107,7 +107,7 @@ describe("Transformer", () => {
     expect(actual.altitude).toBe(0.0);
 
     origin = new Point(36.10696628160147, 140.08457686629436, 0.0);
-    actual = tf.backward(origin);
+    actual = tf.backwardCompat(origin);
     expect(actual.latitude).toBeCloseTo(36.103774792, 0.00000001);
     expect(actual.longitude).toBeCloseTo(140.087855042, 0.00000001);
     expect(actual.altitude).toBe(0.0);
@@ -135,7 +135,7 @@ describe("Transformer", () => {
     expect(actual.altitude).toBeCloseTo(-1.263, 0.001);
 
     origin = new Point(38.29849530463122, 141.55596301776936, 0.0);
-    actual = tf.backward(origin);
+    actual = tf.backwardCompat(origin);
     expect(actual.latitude).toBeCloseTo(38.298512058, 0.00000001);
     expect(actual.longitude).toBeCloseTo(141.555900614, 0.00000001);
     expect(actual.altitude).toBeCloseTo(1.264, 0.001);
@@ -159,7 +159,7 @@ describe("Transformer", () => {
     expect(actual.altitude).toBeCloseTo(0.096, 0.001);
 
     origin = new Point(36.10377301875336, 140.08785924400115, 0);
-    actual = tf.backward(origin);
+    actual = tf.backwardCompat(origin);
     expect(actual.latitude).toBeCloseTo(36.103774792, 0.00000001);
     expect(actual.longitude).toBeCloseTo(140.087855042, 0.00000001);
     expect(actual.altitude).toBeCloseTo(-0.096, 0.001);
