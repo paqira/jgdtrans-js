@@ -870,11 +870,11 @@ export class Transformer {
       throw new TypeError("point");
     }
 
-    const SCALE = 3600;
+    const SCALE = 3600.0;
     const ITERATION = 4;
 
-    let yn = point.latitude;
     let xn = point.longitude;
+    let yn = point.latitude;
 
     for (let i = 0; i < ITERATION; i++) {
       const current = new Point(yn, xn, 0.0);
@@ -893,22 +893,21 @@ export class Transformer {
       const [sw, se, nw, ne] = this.parameterQuadruple(cell);
       const [y, x] = cell.position(current);
 
-      const corr_y =
-        bilinearInterpolation(
-          sw.latitude,
-          se.latitude,
-          nw.latitude,
-          ne.latitude,
-          y,
-          x,
-        ) / SCALE;
-
       const corr_x =
         bilinearInterpolation(
           sw.longitude,
           se.longitude,
           nw.longitude,
           ne.longitude,
+          y,
+          x,
+        ) / SCALE;
+      const corr_y =
+        bilinearInterpolation(
+          sw.latitude,
+          se.latitude,
+          nw.latitude,
+          ne.latitude,
           y,
           x,
         ) / SCALE;
@@ -963,7 +962,7 @@ export class Transformer {
   /** @override */
   toString = () => {
     let desc;
-    if (this.#description === undefined) {
+    if (isUndefined(this.#description)) {
       desc = this.#description;
     } else {
       desc = (
@@ -973,6 +972,6 @@ export class Transformer {
       ).replace("\n", "\\n");
     }
 
-    return `Transformer(format=${this.#format}, paramter=Map[${this.#parameter.size} entries], description=${desc})`;
+    return `Transformer(format=${this.#format}, paramter=Map[${this.#parameter.size} entries], description="${desc}")`;
   };
 }
