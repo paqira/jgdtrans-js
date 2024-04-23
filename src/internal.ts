@@ -164,5 +164,5 @@ export const nextUp = (x: number): number => {
     }
   }
 
-  return view.getFloat64(ORIGIN);
+  return view.getFloat64(ORIGIN, LITTLE_ENDIAN);
 };
