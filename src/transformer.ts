@@ -937,7 +937,7 @@ export class Transformer {
       const fy_y = -1.0 - (a1 * (1.0 - xn) + a2 * xn) / SCALE;
 
       // det
-      const det = fx_x * fy_y - fy_x * fy_x;
+      const det = fx_x * fy_y - fx_y * fy_x;
 
       xn -= (fy_y * fx - fx_y * fy) / det;
       yn -= (fx_x * fy - fy_x * fx) / det;
