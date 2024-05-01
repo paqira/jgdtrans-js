@@ -190,7 +190,8 @@ export class Parser {
   parse = (text: string, description?: string): Transformer => {
     const lines = text.split("\n");
 
-    const header = lines.slice(0, this.#header).join("\n");
+    const header =
+      description ?? lines.slice(0, this.#header).join("\n") + "\n";
 
     const m = new Map<number, Parameter>();
 
@@ -252,6 +253,6 @@ export class Parser {
       lineno += 1;
     }
 
-    return new Transformer(this.#format, m, description ?? header);
+    return new Transformer(this.#format, m, header);
   };
 }
