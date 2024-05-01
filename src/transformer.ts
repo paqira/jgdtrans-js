@@ -349,15 +349,16 @@ export class Correction {
  * // prints Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578103)
  * console.log(result.toString());
  *
- * // backward transformation
+ * // verified backward transformation
+ * const q = tf.backwardCompat(result);
+ * // prints Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
+ * console.log(q.toString());
+ *
+ * // backward transformation compatible to GIAJ web app/APIs
  * const p = tf.backward(result);
  * // prints Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
  * console.log(p.toString());
  *
- * // verified backward transformation
- * const q = tf.backwardSafe(result);
- * // prints Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
- * console.log(q.toString());
  * ```
  */
 export class Transformer {
@@ -618,7 +619,7 @@ export class Transformer {
    * );
    *
    * const origin = new Point(36.103773017086695, 140.08785924333452, 2.4363138578103);
-   * const result = tf.backward(origin);
+   * const result = tf.backwardCompat(origin);
    *
    * console.log(result.latitude);  // Prints 36.10377479000002, exact: 36.10377479
    * console.log(result.longitude);  // Prints 140.087855041, exact: 140.087855041
@@ -804,7 +805,7 @@ export class Transformer {
    * );
    *
    * const origin = new Point(36.103773017086695, 140.08785924333452, 0.0);
-   * const corr = tf.backwardCorrection(origin);
+   * const corr = tf.backwardCompatCorrection(origin);
    *
    * console.log(corr.latitude);  // Prints 1.7729133219831587e-6
    * console.log(corr.longitude);  // Prints -4.202334509042613e-6
@@ -856,7 +857,7 @@ export class Transformer {
    * );
    *
    * const origin = new Point(36.103773017086695, 140.08785924333452, 0.0);
-   * const corr = tf.backwardSafeCorrection(origin);
+   * const corr = tf.backwardCorrection(origin);
    *
    * console.log(corr.latitude);  // Prints 1.7729133100878255e-6
    * console.log(corr.longitude);  // Prints -4.202334510058886e-6

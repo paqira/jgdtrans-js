@@ -54,12 +54,12 @@ const result = tf.forward(origin);
 console.log(result.toString());
 
 // backward transformation
-const p = tf.backwardSafe(result);
+const p = tf.backward(result);
 // prints Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
 console.log(p.toString());
 
 // backward transformation compatible to GIAJ web app/APIs
-const q = tf.backward(result);
+const q = tf.backwardCompat(result);
 // prints Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
 console.log(q.toString());
 ```
