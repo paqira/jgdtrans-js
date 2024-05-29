@@ -26,4 +26,18 @@ describe("Parser", () => {
       expect(value.altitude).toBeCloseTo(0.0);
     });
   });
+
+  test("TKY2JGD EOF", () => {
+    const parser = Parser.fromFormat("TKY2JGD");
+    const tf = parser.parse("\n\n12345678   0.00001   0.00002\n");
+
+    expect(tf.description).toBe("\n\n");
+    expect(tf.meshUnit()).toBe(1);
+    tf.parameter.forEach((value, key) => {
+      expect(key).toBe(12345678);
+      expect(value.latitude).toBeCloseTo(0.00001);
+      expect(value.longitude).toBeCloseTo(0.00002);
+      expect(value.altitude).toBeCloseTo(0.0);
+    });
+  });
 });

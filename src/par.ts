@@ -188,7 +188,10 @@ export class Parser {
   };
 
   parse = (text: string, description?: string): Transformer => {
-    const lines = text.split("\n");
+    // drop ending "\n"
+    const lines = (
+      text.endsWith("\n") ? text.substring(0, text.length - 1) : text
+    ).split("\n");
 
     const header =
       description ?? lines.slice(0, this.#header).join("\n") + "\n";
@@ -207,6 +210,7 @@ export class Parser {
       this.#longitude?.stop ?? Number.MIN_SAFE_INTEGER,
       this.#altitude?.stop ?? Number.MIN_SAFE_INTEGER,
     );
+
     for (const line of lines.slice(this.#header, lines.length)) {
       if (endOfLine < line.length) {
         throw new ParseParError(`invalid line: l${lineno}`);
