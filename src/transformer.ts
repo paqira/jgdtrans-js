@@ -371,7 +371,7 @@ export class Transformer {
    *
    * Equals to `5e-14`.
    */
-  static get ERROR_MAX(): number {
+  static get MAX_ERROR(): number {
     return 5e-14;
   }
 
@@ -636,7 +636,7 @@ export class Transformer {
   /**
    * Returns the backward-transformed position.
    *
-   * The result's error from an exact solution is suppressed under {@link Transformer.ERROR_MAX}.
+   * The result's error from an exact solution is suppressed under {@link Transformer.MAX_ERROR}.
    *
    * Notes, the error is less than 1e-9 \[deg\], which is
    * error of GIAJ latitude and longitude parameter.
@@ -950,8 +950,8 @@ export class Transformer {
       const delta_y = point.latitude - (yn + corr.latitude);
 
       if (
-        Math.abs(delta_x) < Transformer.ERROR_MAX &&
-        Math.abs(delta_y) < Transformer.ERROR_MAX
+        Math.abs(delta_x) < Transformer.MAX_ERROR &&
+        Math.abs(delta_y) < Transformer.MAX_ERROR
       ) {
         return new Correction(-corr.latitude, -corr.longitude, -corr.altitude);
       }
