@@ -87,9 +87,12 @@ const parse_meshcode = (
   stop: number,
   lineno: number,
 ): number => {
-  const substring = line.substring(start, stop).trim();
-  if (isMeshcodeString(substring)) {
-    return Number.parseInt(substring);
+  let substring = line.substring(start, stop).trim();
+  if (substring.length == stop - start) {
+    substring = substring.trim();
+    if (isMeshcodeString(substring)) {
+      return Number.parseInt(substring);
+    }
   }
   throw new ParseParError(`parse error: meshcode l${lineno}:${start}:${stop}`);
 };
@@ -102,9 +105,12 @@ const parse_parameter = (
   name: string,
   lineno: number,
 ): number => {
-  const substring = line.substring(start, stop).trim();
-  if (isParameterString(substring)) {
-    return Number.parseFloat(substring);
+  let substring = line.substring(start, stop);
+  if (substring.length == stop - start) {
+    substring = substring.trim();
+    if (isParameterString(substring)) {
+      return Number.parseFloat(substring);
+    }
   }
   throw new ParseParError(`parse error: ${name} l${lineno}:${start}:${stop}`);
 };
@@ -193,8 +199,11 @@ export class Parser {
       text.endsWith("\n") ? text.substring(0, text.length - 1) : text
     ).split("\n");
 
-    const header =
-      description ?? lines.slice(0, this.#header).join("\n") + "\n";
+    const temp = lines.slice(0, this.#header);
+    if (temp.length != this.#header) {
+      throw new ParseParError("header too short");
+    }
+    const header = description ?? temp.join("\n") + "\n";
 
     const m = new Map<number, Parameter>();
 
