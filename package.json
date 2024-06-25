@@ -18,7 +18,8 @@
     "lint": "eslint src",
     "check": "prettier --check . && eslint src",
     "doc": "typedoc --readme README.md src/jgdtrans.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepare": "npm lint && npm test"
   },
   "repository": {
     "type": "git",
