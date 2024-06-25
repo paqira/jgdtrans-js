@@ -4,8 +4,8 @@
   "description": "Coordinate Transformer by Gridded Correction Parameter (par file)",
   "author": "Kentaro Tatsumi <paqira.2019@gmail.com>",
   "license": "MIT",
-  "main": "dist/jgdtrans.js",
-  "types": "dist/jgdtrans.d.ts",
+  "main": "./dist/jgdtrans.js",
+  "types": "./dist/jgdtrans.d.ts",
   "type": "module",
   "files": [
     "dist/*"
