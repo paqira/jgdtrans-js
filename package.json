@@ -2,6 +2,13 @@
   "name": "@paqira/jgdtrans",
   "version": "0.1.1",
   "description": "Coordinate Transformer by Gridded Correction Parameter (par file)",
+  "keywords": [
+    "GIS",
+    "par file",
+    "geo",
+    "coordinate transformation",
+    "JGD"
+  ],
   "homepage": "https://github.com/paqira/jgdtrans-js",
   "author": "Kentaro Tatsumi <paqira.2019@gmail.com>",
   "license": "MIT",
