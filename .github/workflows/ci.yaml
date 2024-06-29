@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -30,3 +33,24 @@ jobs:
         run: npm run build
       - name: Test
         run: npm test
+      - name: Build doc
+        if: startsWith(github.event.ref, 'refs/tags/v')
+        run: npm run doc
+      - uses: actions/upload-pages-artifact@v3
+        if: startsWith(github.event.ref, 'refs/tags/v')
+        with:
+          path: docs
+  deploy-github-pages:
+    needs: build
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
