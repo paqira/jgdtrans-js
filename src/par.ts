@@ -5,8 +5,6 @@ import { isNull } from "./internal.js";
 /**
  * Format of par file
  *
- * @remark
- *
  * The format `"PatchJGD_HV"` is for the same event, e.g. `touhokutaiheiyouoki2011.par`
  * and `touhokutaiheiyouoki2011_h.par`.
  * We note that transformation works fine with such data,
@@ -40,7 +38,7 @@ export type Format =
 /**
  * Returns `true` when `format` is valid.
  *
- * @param x a test value
+ * @param format a test value
  * @returns `true` when `format` is valid.
  * @example
  * ```
