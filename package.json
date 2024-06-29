@@ -1,6 +1,6 @@
 {
   "name": "@paqira/jgdtrans",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Coordinate Transformer by Gridded Correction Parameter (par file)",
   "homepage": "https://github.com/paqira/jgdtrans-js",
   "author": "Kentaro Tatsumi <paqira.2019@gmail.com>",
