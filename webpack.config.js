@@ -28,7 +28,9 @@ const dflt = {
 const noMin = {
   ...dflt,
   output: {
+    path: path.resolve("dist"),
     filename: "jgdtrans.nomodule.min.js",
+    library: "jgdtrans",
   },
   optimization: {
     minimize: true,
