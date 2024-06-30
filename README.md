@@ -43,15 +43,36 @@ This package does not contain parameter files, download it from GIAJ.
 
 このパッケージはパラメータファイルを提供しません。公式サイトよりダウンロードしてください。
 
+It supports ESM and non-ESM loading:
+
+```html
+<!-- ESM -->
+<script type="module" type="text/javascript">
+  import jgdtrans from 'https://cdn.jsdelivr.net/npm/@paqira/jgdtrans@0.1.1/dist/jgdtrans.js';
+  ...
+</script>
+<!-- non-ESM -->
+<script
+  nomodule
+  defer
+  src="https://cdn.jsdelivr.net/npm/@paqira/jgdtrans@0.1.1/dist/jgdtrans.nomodule.min.js"
+  integrity="sha256-StpZg/zmEw183fm6Dcx9ifllTnf8bwdeJWAqz+heTtU="
+  crossorigin="anonymous"
+></script>
+```
+
 Sample code:
 
 ```javascript
+// Comment out following `import ...;` when loading jgdtrans.nomodule{.min}.js
+import jgdtrans from "https://cdn.jsdelivr.net/npm/@paqira/jgdtrans@0.1.1/dist/jgdtrans.js";
+
 // Contents of SemiDyna2023.par
 const contents = "...";
-const tf = Transformer.fromString(contents, "SemiDynaEXE");
+const tf = jgdtrans.Transformer.fromString(contents, "SemiDynaEXE");
 
 // Geospatial Information Authority of Japan
-const origin = new Point(36.10377479, 140.087855041, 2.34);
+const origin = new jgdtrans.Point(36.10377479, 140.087855041, 2.34);
 
 // forward transformation
 const result = tf.forward(origin);
