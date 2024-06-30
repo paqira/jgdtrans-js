@@ -1,6 +1,6 @@
 {
   "name": "@paqira/jgdtrans",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Coordinate Transformer by Gridded Correction Parameter (par file)",
   "keywords": [
     "GIS",

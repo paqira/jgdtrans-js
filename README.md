@@ -48,14 +48,14 @@ It supports ESM and non-ESM loading:
 ```html
 <!-- ESM -->
 <script type="module" type="text/javascript">
-  import jgdtrans from 'https://cdn.jsdelivr.net/npm/@paqira/jgdtrans@0.1.1/dist/jgdtrans.js';
+  import jgdtrans from 'https://cdn.jsdelivr.net/npm/@paqira/jgdtrans@0.1.2/dist/jgdtrans.js';
   ...
 </script>
 <!-- non-ESM -->
 <script
   nomodule
   defer
-  src="https://cdn.jsdelivr.net/npm/@paqira/jgdtrans@0.1.1/dist/jgdtrans.nomodule.min.js"
+  src="https://cdn.jsdelivr.net/npm/@paqira/jgdtrans@0.1.2/dist/jgdtrans.nomodule.min.js"
   integrity="sha256-StpZg/zmEw183fm6Dcx9ifllTnf8bwdeJWAqz+heTtU="
   crossorigin="anonymous"
 ></script>
@@ -65,7 +65,7 @@ Sample code:
 
 ```javascript
 // Comment out following `import ...;` when loading jgdtrans.nomodule{.min}.js
-import jgdtrans from "https://cdn.jsdelivr.net/npm/@paqira/jgdtrans@0.1.1/dist/jgdtrans.js";
+import jgdtrans from "https://cdn.jsdelivr.net/npm/@paqira/jgdtrans@0.1.2/dist/jgdtrans.js";
 
 // Contents of SemiDyna2023.par
 const contents = "...";
