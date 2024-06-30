@@ -1,4 +1,4 @@
-name: CI
+name: Deploy GitHub Pages
 
 on:
   push:
@@ -16,6 +16,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # very dupuricated to ci.yaml...
+  # However, it is difficult to marge this with it
+  # because of emvioemnt protection
+  # https://github.com/actions/deploy-pages/issues/76
   deploy:
     runs-on: ubuntu-latest
     environment:
