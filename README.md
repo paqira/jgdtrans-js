@@ -2,7 +2,7 @@
 
 [![NPM Version](https://img.shields.io/npm/v/%40paqira%2Fjgdtrans?logo=npm)](https://www.npmjs.com/package/@paqira/jgdtrans)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/paqira/jgdtrans-js/ci.yaml?logo=GitHub)
-[![Static Badge](https://img.shields.io/badge/doc-passing-default)](https://paqira.github.io/jgdtrans-js/)
+[![Static Badge](https://img.shields.io/badge/doc-passing-default?logo=GitHub)](https://paqira.github.io/jgdtrans-js/)
 ![NPM License](https://img.shields.io/npm/l/%40paqira%2Fjgdtrans)
 
 Unofficial coordinate transformer by _Gridded Correction Parameter_
