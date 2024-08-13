@@ -186,7 +186,7 @@ describe("Transformer", () => {
     expect(actual.latitude).toBeCloseTo(36.10377479166668, 0.0000000000001);
     expect(actual.longitude).toBeCloseTo(140.08785504166664, 0.0000000000001);
     expect(actual.altitude).toBeCloseTo(
-      // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+      // eslint-disable-next-line no-loss-of-precision
       -4.2175864502150125955e-10,
       0.0000000000001,
     );
